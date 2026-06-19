@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Axle — Request Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#07070f;--bg-card:#0d0d1c;--bg-nav:rgba(7,7,15,0.92);--gold:#c9a84c;--gold-dim:rgba(201,168,76,0.18);--white:#f0ece0;--muted:#7a7a9a;--border:rgba(201,168,76,0.15);--radius:12px;
+      --pending:#c9a84c; --pending-bg:rgba(201,168,76,0.12);
+      --reviewing:#4c7ec9; --reviewing-bg:rgba(76,126,201,0.12);
+      --added:#4cc97e;    --added-bg:rgba(76,201,126,0.12);
+      --rejected:#c94c4c; --rejected-bg:rgba(201,76,76,0.12);
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 clamp(1rem,4vw,3rem);height:64px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--white);text-decoration:none;white-space:nowrap}
+    .nav-logo span{color:var(--gold)}
+    .nav-links{display:flex;gap:1.5rem;list-style:none}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color 0.2s;padding:0.25rem 0;border-bottom:2px solid transparent}
+    .nav-links a:hover{color:var(--white)}
+    .nav-links a.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .page-hero{padding:120px clamp(1rem,5vw,5rem) 3rem;background:linear-gradient(to bottom,#0d1225,var(--bg));border-bottom:1px solid var(--border);text-align:center}
+    .page-tag{display:inline-flex;align-items:center;gap:0.4rem;background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.75rem;border-radius:4px;margin-bottom:1rem}
+    .page-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:0.75rem}
+    .page-title em{color:var(--gold);font-style:italic}
+    .page-desc{color:var(--muted);font-size:0.95rem;line-height:1.7;max-width:520px;margin:0 auto}
+
+    /* LEGEND */
+    .legend{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+    .legend-item{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;font-weight:600}
+    .legend-dot{width:8px;height:8px;border-radius:50%}
+
+    main{padding:2.5rem clamp(1rem,4vw,3rem) 5rem}
+
+    /* SEARCH + FILTER */
+    .controls{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+    .search-wrap{position:relative;flex:1;min-width:200px}
+    .search-wrap input{width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;color:var(--white);font-family:'Inter',sans-serif;font-size:0.875rem;padding:0.6rem 1rem 0.6rem 2.4rem;outline:none;transition:border-color 0.2s}
+    .search-wrap input::placeholder{color:var(--muted)}
+    .search-wrap input:focus{border-color:var(--gold)}
+    .search-wrap svg{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+    .filter-btns{display:flex;gap:0.4rem;flex-wrap:wrap}
+    .fbtn{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--muted);font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;padding:0.4rem 0.85rem;border-radius:20px;cursor:pointer;transition:all 0.2s}
+    .fbtn:hover,.fbtn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+
+    /* RESULTS COUNT */
+    .results-bar{margin-bottom:1.25rem}
+    .results-bar p{font-size:0.85rem;color:var(--muted)}
+    .results-bar span{color:var(--gold);font-weight:700}
+
+    /* REQUEST CARDS */
+    .request-list{display:flex;flex-direction:column;gap:0.85rem}
+    .request-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1.25rem;animation:fadeIn 0.35s ease both;transition:border-color 0.2s}
+    .request-card:hover{border-color:rgba(201,168,76,0.3)}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .card-type-badge{flex-shrink:0;width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border)}
+    .card-body{flex:1;min-width:0}
+    .card-top{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.3rem;flex-wrap:wrap}
+    .card-title-text{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-year-badge{font-size:0.72rem;color:var(--muted);background:rgba(255,255,255,0.06);border:1px solid var(--border);padding:0.1rem 0.45rem;border-radius:4px;white-space:nowrap}
+    .card-meta{display:flex;gap:0.75rem;font-size:0.78rem;color:var(--muted);flex-wrap:wrap}
+    .card-genre-tag{color:var(--gold);font-weight:600}
+    .card-date{font-size:0.72rem}
+    .card-msg{font-size:0.8rem;color:var(--muted);margin-top:0.4rem;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+    /* STATUS BADGE */
+    .status-badge{flex-shrink:0;font-size:0.75rem;font-weight:700;padding:0.3rem 0.8rem;border-radius:20px;text-align:center;white-space:nowrap;letter-spacing:0.04em}
+    .status-badge.Pending   {background:var(--pending-bg);color:var(--pending);border:1px solid var(--pending)}
+    .status-badge.Reviewing {background:var(--reviewing-bg);color:var(--reviewing);border:1px solid var(--reviewing)}
+    .status-badge.Added     {background:var(--added-bg);color:var(--added);border:1px solid var(--added)}
+    .status-badge.Rejected  {background:var(--rejected-bg);color:var(--rejected);border:1px solid var(--rejected)}
+
+    /* LOADING / EMPTY */
+    .state-box{text-align:center;padding:4rem 2rem;color:var(--muted)}
+    .state-icon{font-size:3rem;display:block;margin-bottom:1rem}
+    .state-box p{font-size:1rem;line-height:1.6}
+    .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* SETUP NOTICE */
+    .setup-notice{background:var(--bg-card);border:1px solid rgba(76,126,201,0.3);border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem;display:none}
+    .setup-notice.show{display:block}
+    .setup-notice h3{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:0.5rem;color:#4c7ec9}
+    .setup-notice p{font-size:0.85rem;color:var(--muted);line-height:1.6}
+    .setup-notice code{background:rgba(255,255,255,0.08);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.82rem;color:var(--white)}
+
+    footer{border-top:1px solid var(--border);padding:2rem clamp(1rem,4vw,3rem);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900}
+    .footer-logo span{color:var(--gold)}
+    footer p{color:var(--muted);font-size:0.8rem}
+    @media(max-width:640px){.nav-links{display:none}.request-card{flex-wrap:wrap}.status-badge{align-self:flex-start}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Happy <span>Axle</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="movies.html">Movies</a></li>
+    <li><a href="tvshows.html">TV Shows</a></li>
+    <li><a href="request.html">Request</a></li>
+    <li><a href="status.html" class="active">Status</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <div class="page-tag">🕐 Live Updates</div>
+  <h1 class="page-title">Request <em>Status</em></h1>
+  <p class="page-desc">Track the status of all submitted movie and TV show requests. Updated directly by the Happy Axle team.</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--pending)"></div> Pending</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--reviewing)"></div> Reviewing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--added)"></div> Added</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--rejected)"></div> Rejected</div>
+  </div>
+</div>
+
+<main>
+  <!-- SETUP NOTICE — hidden once sheet ID is pasted -->
+  <div class="setup-notice" id="setupNotice">
+    <h3>⚙️ Setup Required</h3>
+    <p>Paste your Google Sheet ID into this file to show live requests. Find it in this line inside the <code>status.html</code> code: <code>var SHEET_ID = "1qytxDQVL3Jg4A8M-813DO7mnDgsdNfF0-nTOEQMQlm8";</code></p>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search by title…"/>
+    </div>
+    <div class="filter-btns" id="filterBtns">
+      <button class="fbtn active" data-filter="all">All</button>
+      <button class="fbtn" data-filter="Pending">⏳ Pending</button>
+      <button class="fbtn" data-filter="Reviewing">🔍 Reviewing</button>
+      <button class="fbtn" data-filter="Added">✅ Added</button>
+      <button class="fbtn" data-filter="Rejected">❌ Rejected</button>
+    </div>
+  </div>
+
+  <div class="results-bar"><p>Showing <span id="countLabel">—</span> requests</p></div>
+
+  <div id="stateBox" class="state-box">
+    <div class="spinner"></div>
+    <p>Loading requests…</p>
+  </div>
+
+  <div class="request-list" id="requestList" style="display:none"></div>
+</main>
+
+<footer>
+  <div class="footer-logo">Happy <span>Axle</span></div>
+  <p>© 2026 Happy Axle. All rights reserved.</p>
+  <p>Built by Jeff West</p>
+</footer>
+
+<script>
+  // ── PASTE YOUR GOOGLE SHEET ID HERE ──
+  // (The long ID from your sheet URL: docs.google.com/spreadsheets/d/THIS_PART/edit)
+  var SHEET_ID = "1qytxDQVL3Jg4A8M-813DO7mnDgsdNfF0-nTOEQMQlm8";
+
+  var allRequests = [];
+  var activeFilter = "all";
+  var searchQuery  = "";
+
+  function getStatusClass(s) {
+    if(!s || s.trim()==="") return "Pending";
+    var v = s.trim();
+    if(v.toLowerCase().indexOf("review")!==-1) return "Reviewing";
+    if(v.toLowerCase().indexOf("add")!==-1)    return "Added";
+    if(v.toLowerCase().indexOf("reject")!==-1) return "Rejected";
+    return "Pending";
+  }
+
+  function getStatusLabel(s) {
+    var c = getStatusClass(s);
+    var icons = {Pending:"⏳ Pending", Reviewing:"🔍 Reviewing", Added:"✅ Added", Rejected:"❌ Rejected"};
+    return icons[c];
+  }
+
+  function formatDate(raw) {
+    if(!raw) return "";
+    try {
+      var d = new Date(raw);
+      return d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+    } catch(e){ return raw; }
+  }
+
+  function buildCard(row, i) {
+    var type    = row[1] || "Movie";
+    var title   = row[2] || "Unknown Title";
+    var year    = row[3] || "";
+    var genre   = row[4] || "";
+    var message = row[5] || "";
+    var status  = row[6] || "Pending";
+    var date    = formatDate(row[0]);
+    var emoji   = type === "TV Show" ? "📺" : "🎬";
+    var sc      = getStatusClass(status);
+    var sl      = getStatusLabel(status);
+    return '<div class="request-card" style="animation-delay:'+(i*0.04)+'s">'
+      + '<div class="card-type-badge">'+emoji+'</div>'
+      + '<div class="card-body">'
+      + '<div class="card-top"><span class="card-title-text">'+title+'</span>'
+      + (year?'<span class="card-year-badge">'+year+'</span>':'')+' </div>'
+      + '<div class="card-meta">'
+      + (genre?'<span class="card-genre-tag">'+genre+'</span>':'')
+      + '<span>'+type+'</span>'
+      + (date?'<span class="card-date">'+date+'</span>':'')
+      + '</div>'
+      + (message?'<div class="card-msg">"'+message+'"</div>':'')
+      + '</div>'
+      + '<div class="status-badge '+sc+'">'+sl+'</div>'
+      + '</div>';
+  }
+
+  function render() {
+    var q = searchQuery.toLowerCase();
+    var filtered = allRequests.filter(function(row) {
+      var title  = (row[2]||"").toLowerCase();
+      var status = getStatusClass(row[6]||"");
+      var matchQ = title.indexOf(q) !== -1;
+      var matchF = activeFilter === "all" || status === activeFilter;
+      return matchQ && matchF;
+    });
+    document.getElementById("countLabel").textContent = filtered.length;
+    var list = document.getElementById("requestList");
+    if(filtered.length === 0) {
+      list.style.display = "none";
+      document.getElementById("stateBox").style.display = "block";
+      document.getElementById("stateBox").innerHTML = '<span class="state-icon">📭</span><p>No requests match your search.</p>';
+    } else {
+      document.getElementById("stateBox").style.display = "none";
+      list.style.display = "flex";
+      list.innerHTML = filtered.map(function(row,i){ return buildCard(row,i); }).join("");
+    }
+  }
+
+  function loadData() {
+    if(SHEET_ID === "YOUR_SHEET_ID_HERE") {
+      document.getElementById("setupNotice").classList.add("show");
+      document.getElementById("stateBox").innerHTML = '<span class="state-icon">⚙️</span><p>Paste your Google Sheet ID into this file to load requests.</p>';
+      return;
+    }
+    var url = "https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv";
+    fetch(url)
+      .then(function(r){ return r.text(); })
+      .then(function(csv){
+        var lines = csv.trim().split("\n").slice(1); // skip header row
+        allRequests = lines.map(function(line){
+          var cols = [];
+          var cur = ""; var inQ = false;
+          for(var ci=0; ci<line.length; ci++){
+            var ch=line[ci];
+            if(ch==='"'){ inQ=!inQ; }
+            else if(ch===','&&!inQ){ cols.push(cur.replace(/^"|"$/g,"")); cur=""; }
+            else { cur+=ch; }
+          }
+          cols.push(cur.replace(/^"|"$/g,""));
+          return cols;
+        }).filter(function(r){ return r[2]&&r[2].trim(); });
+        document.getElementById("countLabel").textContent = allRequests.length;
+        if(allRequests.length === 0){
+          document.getElementById("stateBox").innerHTML='<span class="state-icon">📭</span><p>No requests submitted yet.</p>';
+        } else {
+          render();
+        }
+      })
+      .catch(function(){
+        document.getElementById("stateBox").innerHTML='<span class="state-icon">⚠️</span><p>Could not load requests. Make sure your sheet is shared as "Anyone with the link can view".</p>';
+      });
+  }
+
+  document.getElementById("filterBtns").addEventListener("click",function(e){
+    var b=e.target.closest(".fbtn"); if(!b)return;
+    document.querySelectorAll(".fbtn").forEach(function(x){x.classList.remove("active")});
+    b.classList.add("active");
+    activeFilter=b.dataset.filter;
+    render();
+  });
+
+  document.getElementById("searchInput").addEventListener("input",function(e){
+    searchQuery=e.target.value; render();
+  });
+
+  loadData();
+</script>
+</body>
+</html>
