@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Axle — Request a Title</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#07070f;--bg-card:#0d0d1c;--bg-nav:rgba(7,7,15,0.92);--gold:#c9a84c;--gold-dim:rgba(201,168,76,0.18);--white:#f0ece0;--muted:#7a7a9a;--border:rgba(201,168,76,0.15);--radius:12px}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 clamp(1rem,4vw,3rem);height:64px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--white);text-decoration:none;white-space:nowrap}
+    .nav-logo span{color:var(--gold)}
+    .nav-links{display:flex;gap:1.5rem;list-style:none}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color 0.2s;padding:0.25rem 0;border-bottom:2px solid transparent}
+    .nav-links a:hover{color:var(--white)}
+    .nav-links a.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .page-hero{padding:120px clamp(1rem,5vw,5rem) 3rem;background:linear-gradient(to bottom,#0a1a10,var(--bg));border-bottom:1px solid rgba(76,201,126,0.15);text-align:center}
+    .page-tag{display:inline-flex;align-items:center;gap:0.4rem;background:rgba(76,201,126,0.12);border:1px solid #4cc97e;color:#4cc97e;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.75rem;border-radius:4px;margin-bottom:1rem}
+    .page-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:0.75rem}
+    .page-title em{color:var(--gold);font-style:italic}
+    .page-desc{color:var(--muted);font-size:0.95rem;line-height:1.7;max-width:520px;margin:0 auto 1.25rem}
+    .status-link{display:inline-flex;align-items:center;gap:0.4rem;color:var(--gold);font-size:0.85rem;font-weight:600;text-decoration:none;border:1px solid var(--border);padding:0.45rem 1rem;border-radius:20px;transition:all 0.2s}
+    .status-link:hover{background:var(--gold-dim);border-color:var(--gold)}
+    main{padding:3rem clamp(1rem,4vw,3rem) 6rem;display:flex;justify-content:center}
+    .form-card{width:100%;max-width:560px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:clamp(1.5rem,4vw,2.5rem);position:relative;overflow:hidden}
+    .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--gold),rgba(201,168,76,0.3))}
+    .form-group{margin-bottom:1.5rem}
+    .form-label{display:block;font-size:0.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem}
+    .form-label span{color:var(--gold);margin-left:2px}
+    .form-input,.form-select,.form-textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.2);border-radius:8px;color:var(--white);font-family:'Inter',sans-serif;font-size:0.95rem;padding:0.75rem 1rem;outline:none;transition:border-color 0.2s,background 0.2s}
+    .form-input::placeholder,.form-textarea::placeholder{color:var(--muted)}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);background:rgba(201,168,76,0.05)}
+    .form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7a9a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;background-color:rgba(255,255,255,0.04);padding-right:2.5rem}
+    .form-select option{background:#0d0d1c;color:var(--white)}
+    .form-textarea{resize:vertical;min-height:100px;line-height:1.6}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+    .type-option{position:relative}
+    .type-option input{position:absolute;opacity:0;width:0;height:0}
+    .type-label{display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem;border:1px solid rgba(201,168,76,0.2);border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:600;color:var(--muted);transition:all 0.2s;background:rgba(255,255,255,0.03)}
+    .type-option input:checked+.type-label{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+    .type-label:hover{border-color:var(--gold);color:var(--white)}
+    .form-hint{font-size:0.75rem;color:var(--muted);margin-top:0.35rem}
+    .submit-btn{width:100%;background:var(--gold);color:#07070f;font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;padding:0.9rem;border-radius:8px;border:none;cursor:pointer;transition:opacity 0.2s,transform 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:0.5rem}
+    .submit-btn:hover{opacity:0.9;transform:translateY(-2px)}
+    .submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+    .success-box{display:none;text-align:center;padding:2rem}
+    .success-box.show{display:block}
+    .success-icon{font-size:3.5rem;display:block;margin-bottom:1rem;animation:pop 0.4s ease}
+    @keyframes pop{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+    .success-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:0.5rem}
+    .success-title em{color:var(--gold);font-style:italic}
+    .success-desc{color:var(--muted);font-size:0.9rem;line-height:1.7;margin-bottom:1.5rem}
+    .success-actions{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
+    .success-btn{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.875rem;font-weight:600;text-decoration:none;border:1px solid var(--gold);padding:0.5rem 1.25rem;border-radius:8px;transition:all 0.2s;color:var(--gold)}
+    .success-btn:hover{background:var(--gold);color:#07070f}
+    .success-btn.primary{background:var(--gold);color:#07070f}
+    .success-btn.primary:hover{opacity:0.85}
+    .error-msg{display:none;background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.4);color:#e74c3c;border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;margin-top:1rem}
+    .error-msg.show{display:block}
+    footer{border-top:1px solid var(--border);padding:2rem clamp(1rem,4vw,3rem);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900}
+    .footer-logo span{color:var(--gold)}
+    footer p{color:var(--muted);font-size:0.8rem}
+    @media(max-width:640px){.nav-links{display:none}.form-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Happy <span>Axle</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="movies.html">Movies</a></li>
+    <li><a href="tvshows.html">TV Shows</a></li>
+    <li><a href="request.html" class="active">Request</a></li>
+    <li><a href="status.html">Status</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <div class="page-tag">📬 Can't find it?</div>
+  <h1 class="page-title">Request a <em>Title</em></h1>
+  <p class="page-desc">Don't see the movie or show you're looking for? Submit a request and we'll do our best to add it to the collection.</p>
+  <a href="status.html" class="status-link">🕐 Check request status →</a>
+</div>
+
+<main>
+  <div class="form-card">
+    <form id="requestForm">
+      <div class="form-group">
+        <label class="form-label">Type <span>*</span></label>
+        <div class="type-toggle">
+          <div class="type-option">
+            <input type="radio" name="type" id="typeMovie" value="Movie" checked/>
+            <label class="type-label" for="typeMovie">🎬 Movie</label>
+          </div>
+          <div class="type-option">
+            <input type="radio" name="type" id="typeTV" value="TV Show"/>
+            <label class="type-label" for="typeTV">📺 TV Show</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="titleInput">Title <span>*</span></label>
+          <input class="form-input" type="text" id="titleInput" placeholder="e.g. Gladiator II" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="yearInput">Year <span>*</span></label>
+          <input class="form-input" type="number" id="yearInput" placeholder="e.g. 2024" min="1900" max="2030" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="genreSelect">Genre</label>
+        <select class="form-select" id="genreSelect">
+          <option value="">— Select a genre —</option>
+          <option>Action</option><option>Drama</option><option>Comedy</option>
+          <option>Sci-Fi</option><option>Thriller</option><option>Horror</option>
+          <option>Crime</option><option>Animation</option><option>Fantasy</option>
+          <option>Romance</option><option>Documentary</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="messageInput">Why do you want it?</label>
+        <textarea class="form-textarea" id="messageInput" placeholder="Tell us why you'd love to see this added…"></textarea>
+        <p class="form-hint">Optional — but it helps us prioritise your request.</p>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Send Request
+      </button>
+      <div class="error-msg" id="errorMsg">Something went wrong. Please try again.</div>
+    </form>
+    <div class="success-box" id="successBox">
+      <span class="success-icon">🎉</span>
+      <h2 class="success-title">Request <em>Sent!</em></h2>
+      <p class="success-desc">Thanks! We've received your request and will review it soon. Check the status page to track your request.</p>
+      <div class="success-actions">
+        <a href="status.html" class="success-btn primary">🕐 Check Status</a>
+        <a href="index.html" class="success-btn">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-logo">Happy <span>Axle</span></div>
+  <p>© 2026 Happy Axle. All rights reserved.</p>
+  <p>Built by Jeff West</p>
+</footer>
+
+<script>
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGPdCGHHLoQJQqy7TT5sLfjtkGOFSwwscIqi3O9qqEne6CdsFiGLCyi_IfdLNPuVUGBQ/exec";
+  document.getElementById("requestForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    var btn = document.getElementById("submitBtn");
+    var errMsg = document.getElementById("errorMsg");
+    errMsg.classList.remove("show");
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Sending…';
+    var data = {
+      type:    document.querySelector('input[name="type"]:checked').value,
+      title:   document.getElementById("titleInput").value.trim(),
+      year:    document.getElementById("yearInput").value.trim(),
+      genre:   document.getElementById("genreSelect").value,
+      message: document.getElementById("messageInput").value.trim()
+    };
+    fetch(SCRIPT_URL, { method:"POST", body: JSON.stringify(data) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if(res.status==="success"){
+          document.getElementById("requestForm").style.display="none";
+          document.getElementById("successBox").classList.add("show");
+        } else { throw new Error(); }
+      })
+      .catch(function(){
+        errMsg.classList.add("show");
+        btn.disabled=false;
+        btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Send Request';
+      });
+  });
+</script>
+</body>
+</html>
