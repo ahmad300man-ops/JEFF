@@ -115,6 +115,11 @@
 
 <script>
 var SHEET_ID = "1qytxDQVL3Jg4A8M-813DO7mnDgsdNfF0-nTOEQMQlm8";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGPdCGHHLoQJQqy7TT5sLfjtkGOFSwwscIqi3O9qqEne6CdsFiGLCyi_IfdLNPuVUGBQ/exec";
+
+function trackView(title){
+  fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"increment",type:"show",title:title})}).catch(function(){});
+}
 
 var genreColors = {
   "drama":       ["#1a1000","#302010","#402810"],
@@ -198,7 +203,8 @@ function loadShows(){
           rating:   r[2]||"",
           genre:    (r[3]||"other").toLowerCase().trim(),
           emoji:    r[4]||"📺",
-          watchLink:r[5]||""
+          watchLink:r[5]||"",
+          views:    parseInt(r[6])||0
         };
       });
       render();
