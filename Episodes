@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Axle — TV Show</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#07070f;--bg-card:#0d0d1c;--bg-nav:rgba(7,7,15,0.92);--gold:#c9a84c;--gold-dim:rgba(201,168,76,0.18);--blue:#4c7ec9;--blue-dim:rgba(76,126,201,0.18);--white:#f0ece0;--muted:#7a7a9a;--border:rgba(201,168,76,0.15);--border-blue:rgba(76,126,201,0.25);--radius:12px}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg-nav);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 clamp(1rem,4vw,3rem);height:64px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--white);text-decoration:none;white-space:nowrap}
+    .nav-logo span{color:var(--gold)}
+    .nav-links{display:flex;gap:1.5rem;list-style:none}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color 0.2s;padding:0.25rem 0;border-bottom:2px solid transparent}
+    .nav-links a:hover{color:var(--white)}
+    .nav-links a.active{color:var(--blue);border-bottom-color:var(--blue)}
+    .back-btn{display:inline-flex;align-items:center;gap:0.5rem;color:var(--muted);text-decoration:none;font-size:0.85rem;font-weight:600;transition:color 0.2s;margin-bottom:1.5rem}
+    .back-btn:hover{color:var(--white)}
+
+    /* SHOW HERO */
+    .show-hero{padding:100px clamp(1rem,5vw,5rem) 3rem;position:relative;overflow:hidden}
+    .show-hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#07070f 0%,#0d1830 60%,#07070f 100%);z-index:0}
+    .show-hero-bg::after{content:'';position:absolute;top:0;right:0;width:6px;height:100%;background:repeating-linear-gradient(to bottom,var(--blue) 0px,var(--blue) 24px,transparent 24px,transparent 36px);opacity:0.4}
+    .show-hero-content{position:relative;z-index:1;display:flex;gap:2.5rem;align-items:flex-start;flex-wrap:wrap}
+    .show-poster{flex-shrink:0;width:clamp(120px,18vw,200px);aspect-ratio:2/3;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:4rem;border:1px solid var(--border-blue);box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+    .show-details{flex:1;min-width:220px}
+    .show-tag{display:inline-flex;align-items:center;gap:0.4rem;background:var(--blue-dim);border:1px solid var(--blue);color:var(--blue);font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.75rem;border-radius:4px;margin-bottom:1rem}
+    .show-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;line-height:1.1;margin-bottom:0.75rem}
+    .show-meta{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1rem}
+    .meta-item{display:flex;align-items:center;gap:0.35rem;font-size:0.85rem;color:var(--muted)}
+    .meta-item strong{color:var(--white);font-weight:600}
+    .meta-item.rating{color:var(--gold)}
+    .show-genre{display:inline-block;background:var(--blue-dim);border:1px solid var(--blue);color:var(--blue);font-size:0.75rem;font-weight:600;padding:0.25rem 0.75rem;border-radius:20px;text-transform:capitalize}
+
+    /* SEASONS SECTION */
+    main{padding:2rem clamp(1rem,4vw,3rem) 5rem}
+    .section-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem}
+    .section-title::before{content:'';display:block;width:4px;height:1.4em;background:var(--blue);border-radius:2px}
+    .seasons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+    .season-card{background:var(--bg-card);border:1px solid var(--border-blue);border-radius:var(--radius);padding:1.25rem;display:flex;flex-direction:column;gap:0.85rem;animation:fadeIn 0.4s ease both;transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s}
+    .season-card:hover{border-color:var(--blue);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.4)}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .season-number{font-size:0.72rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em}
+    .season-name{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;line-height:1.3}
+    .season-info{font-size:0.8rem;color:var(--muted);line-height:1.5}
+    .season-watch-btn{display:flex;align-items:center;justify-content:center;gap:0.5rem;background:var(--blue);color:#fff;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:700;padding:0.65rem 1rem;border-radius:8px;text-decoration:none;transition:opacity 0.2s,transform 0.2s;margin-top:auto}
+    .season-watch-btn:hover{opacity:0.85;transform:translateY(-1px)}
+    .season-no-link{display:flex;align-items:center;justify-content:center;gap:0.5rem;background:rgba(255,255,255,0.05);color:var(--muted);font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;padding:0.65rem 1rem;border-radius:8px;margin-top:auto;border:1px solid var(--border-blue)}
+
+    /* STATES */
+    .state-box{text-align:center;padding:4rem 2rem;color:var(--muted)}
+    .spinner{width:36px;height:36px;border:3px solid var(--border-blue);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .no-seasons{background:var(--bg-card);border:1px solid var(--border-blue);border-radius:var(--radius);padding:2rem;text-align:center;color:var(--muted)}
+    .no-seasons p{margin-top:0.5rem;font-size:0.9rem}
+
+    footer{border-top:1px solid var(--border-blue);padding:2rem clamp(1rem,4vw,3rem);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900}
+    .footer-logo span{color:var(--gold)}
+    footer p{color:var(--muted);font-size:0.8rem}
+    @media(max-width:640px){.nav-links{display:none}.show-hero-content{flex-direction:column}.seasons-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Happy <span>Axle</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="movies.html">Movies</a></li>
+    <li><a href="tvshows.html" class="active">TV Shows</a></li>
+    <li><a href="request.html">Request</a></li>
+    <li><a href="status.html">Status</a></li>
+  </ul>
+</nav>
+
+<div class="show-hero">
+  <div class="show-hero-bg"></div>
+  <div class="show-hero-content">
+    <div class="show-poster" id="showPoster" style="background:linear-gradient(145deg,#0d1830,#1a2540)">🎬</div>
+    <div class="show-details">
+      <a href="tvshows.html" class="back-btn">← Back to TV Shows</a>
+      <div class="show-tag" id="showTag">📺 TV Show</div>
+      <h1 class="show-title" id="showTitle">Loading…</h1>
+      <div class="show-meta" id="showMeta"></div>
+      <span class="show-genre" id="showGenre"></span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <h2 class="section-title">Seasons</h2>
+  <div id="seasonsState" class="state-box"><div class="spinner"></div><p>Loading seasons…</p></div>
+  <div class="seasons-grid" id="seasonsGrid" style="display:none"></div>
+</main>
+
+<footer>
+  <div class="footer-logo">Happy <span>Axle</span></div>
+  <p>© 2026 Happy Axle. All rights reserved.</p>
+  <p>Built by Jeff West</p>
+</footer>
+
+<script>
+var SHEET_ID = "1qytxDQVL3Jg4A8M-813DO7mnDgsdNfF0-nTOEQMQlm8";
+
+var genreColors = {
+  "drama":["#1a1000","#302010","#402810"],"thriller":["#001808","#002810","#003818"],
+  "sci-fi":["#050a1e","#0a1530","#102040"],"crime":["#200000","#350000","#500010"],
+  "fantasy":["#1a0a00","#2d1500","#402000"],"comedy":["#1a1800","#2d2a00","#403c00"],
+  "horror":["#0a0000","#1a0000","#2a0000"],"action":["#0d1a30","#1a2d50","#2a4070"],
+  "default":["#0d0d20","#1a1a35","#272745"]
+};
+
+function parseCSV(text){
+  var rows=[],cur="",inQ=false,row=[];
+  for(var i=0;i<text.length;i++){
+    var ch=text[i];
+    if(ch==='"'){inQ=!inQ;}
+    else if(ch===','&&!inQ){row.push(cur.replace(/^"|"$/g,""));cur="";}
+    else if((ch==='\n'||ch==='\r')&&!inQ){
+      if(ch==='\r'&&text[i+1]==='\n')i++;
+      row.push(cur.replace(/^"|"$/g,""));rows.push(row);row=[];cur="";
+    }else{cur+=ch;}
+  }
+  if(cur||row.length){row.push(cur.replace(/^"|"$/g,""));rows.push(row);}
+  return rows;
+}
+
+// Get show name from URL: tvshow.html?show=Breaking+Bad
+var params = new URLSearchParams(window.location.search);
+var showName = decodeURIComponent(params.get("show")||"");
+
+if(!showName){
+  document.getElementById("showTitle").textContent = "Show not found";
+  document.getElementById("seasonsState").innerHTML = '<p>No show specified. <a href="tvshows.html" style="color:var(--blue)">Go back to TV Shows</a></p>';
+} else {
+  document.title = "Happy Axle — " + showName;
+
+  // Load show info from TV Shows tab
+  fetch("https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv&sheet=TV+Shows")
+    .then(function(r){return r.text()})
+    .then(function(csv){
+      var rows = parseCSV(csv).slice(1).filter(function(r){return r[0]&&r[0].trim()});
+      var show = null;
+      for(var i=0;i<rows.length;i++){
+        if(rows[i][0].trim().toLowerCase()===showName.toLowerCase()){show=rows[i];break;}
+      }
+      if(show){
+        // Columns: Title | Seasons | Rating | Genre | Emoji | Watch Link
+        var title   = show[0]||showName;
+        var seasons = show[1]||"";
+        var rating  = show[2]||"";
+        var genre   = (show[3]||"").toLowerCase().trim();
+        var emoji   = show[4]||"📺";
+        var c = genreColors[genre]||genreColors["default"];
+
+        document.getElementById("showTitle").textContent = title;
+        document.getElementById("showPoster").style.background = "linear-gradient(145deg,"+c[0]+","+c[1]+","+c[2]+")";
+        document.getElementById("showPoster").textContent = emoji;
+        document.getElementById("showGenre").textContent = genre;
+        document.getElementById("showMeta").innerHTML =
+          (rating?'<div class="meta-item rating">★ <strong>'+rating+'</strong></div>':'')
+          +(seasons?'<div class="meta-item">📺 <strong>'+seasons+'</strong></div>':'');
+      } else {
+        document.getElementById("showTitle").textContent = showName;
+      }
+    }).catch(function(){
+      document.getElementById("showTitle").textContent = showName;
+    });
+
+  // Load episodes from Episodes tab
+  // Episodes tab columns: Show | Season | Link | Notes (optional)
+  fetch("https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv&sheet=Episodes")
+    .then(function(r){return r.text()})
+    .then(function(csv){
+      var rows = parseCSV(csv).slice(1).filter(function(r){return r[0]&&r[0].trim()});
+      var seasons = rows.filter(function(r){
+        return r[0].trim().toLowerCase()===showName.toLowerCase();
+      });
+
+      document.getElementById("seasonsState").style.display="none";
+      var grid = document.getElementById("seasonsGrid");
+      grid.style.display="grid";
+
+      if(!seasons.length){
+        grid.style.display="none";
+        document.getElementById("seasonsState").style.display="block";
+        document.getElementById("seasonsState").innerHTML =
+          '<div class="no-seasons"><p style="font-size:2rem">📭</p><p>No seasons added yet for this show.</p><p style="margin-top:0.5rem;font-size:0.8rem">Add them in your Google Sheet under the <strong>Episodes</strong> tab.</p></div>';
+        return;
+      }
+
+      grid.innerHTML = seasons.map(function(r,i){
+        var season = r[1]||"Season "+(i+1);
+        var link   = r[2]||"";
+        var notes  = r[3]||"";
+        return '<div class="season-card" style="animation-delay:'+(i*0.07)+'s">'
+          +'<div class="season-number">'+season+'</div>'
+          +'<div class="season-name">'+showName+' — '+season+'</div>'
+          +(notes?'<div class="season-info">'+notes+'</div>':'')
+          +(link
+            ?'<a href="'+link+'" target="_blank" class="season-watch-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg> Watch '+season+'</a>'
+            :'<div class="season-no-link">🔒 Link coming soon</div>')
+          +'</div>';
+      }).join("");
+    })
+    .catch(function(){
+      document.getElementById("seasonsState").innerHTML='<p>Could not load seasons. Make sure your sheet has an <strong>Episodes</strong> tab.</p>';
+    });
+}
+</script>
+</body>
+</html>
