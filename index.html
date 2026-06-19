@@ -49,13 +49,14 @@
     .section-title::before{content:'';display:block;width:4px;height:1.4em;border-radius:2px}
     .section-title.gold::before{background:var(--gold)}
     .section-title.blue::before{background:var(--blue)}
+    .section-sub{font-size:0.78rem;color:var(--muted);font-weight:500;margin-left:0.25rem}
     .view-all-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.4rem;border-radius:8px;font-size:0.85rem;font-weight:700;text-decoration:none;transition:all 0.2s}
     .view-all-btn.gold{background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold)}
     .view-all-btn.gold:hover{background:var(--gold);color:#07070f}
     .view-all-btn.blue{background:var(--blue-dim);border:1px solid var(--blue);color:var(--blue)}
     .view-all-btn.blue:hover{background:var(--blue);color:#fff}
     .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1.25rem}
-    .card{border-radius:var(--radius);overflow:hidden;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;animation:fadeIn 0.4s ease both}
+    .card{border-radius:var(--radius);overflow:hidden;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;animation:fadeIn 0.4s ease both;text-decoration:none;color:inherit;display:block}
     .card.gold-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(0,0,0,0.5),0 0 0 1px var(--gold);border-color:var(--gold)}
     .card.blue-card:hover{transform:translateY(-6px);box-shadow:0 20px 48px rgba(0,0,0,0.5),0 0 0 1px var(--blue);border-color:var(--blue)}
     @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -66,7 +67,8 @@
     .card-rating{position:absolute;top:0.6rem;right:0.6rem;background:rgba(7,7,15,0.85);font-size:0.72rem;font-weight:700;padding:0.2rem 0.45rem;border-radius:4px;display:flex;align-items:center;gap:0.2rem;backdrop-filter:blur(4px)}
     .card-rating.gold{border:1px solid var(--gold);color:var(--gold)}
     .card-rating.blue{border:1px solid var(--blue);color:var(--blue)}
-    .card-badge{position:absolute;top:0.6rem;left:0.6rem;background:rgba(76,126,201,0.9);color:#fff;font-size:0.65rem;font-weight:700;padding:0.2rem 0.45rem;border-radius:4px;letter-spacing:0.06em}
+    .card-views{position:absolute;bottom:0.6rem;left:0.6rem;background:rgba(7,7,15,0.75);font-size:0.65rem;font-weight:600;color:var(--muted);padding:0.15rem 0.4rem;border-radius:4px;display:flex;align-items:center;gap:0.25rem}
+    .card-badge{position:absolute;top:0.6rem;left:0.6rem;background:rgba(76,126,201,0.9);color:#fff;font-size:0.65rem;font-weight:700;padding:0.2rem 0.45rem;border-radius:4px}
     .card-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s}
     .card:hover .card-play{opacity:1}
     .play-circle{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -76,10 +78,13 @@
     .card-title{font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;line-height:1.3;margin-bottom:0.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .card-meta{display:flex;align-items:center;justify-content:space-between;gap:0.5rem}
     .card-year{font-size:0.75rem;color:var(--muted)}
-    .card-genre{font-size:0.68rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:3px;white-space:nowrap}
+    .card-genre{font-size:0.68rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:3px;white-space:nowrap;text-transform:capitalize}
     .card-genre.gold{color:var(--gold);background:var(--gold-dim)}
     .card-genre.blue{color:var(--blue);background:var(--blue-dim)}
     .section-divider{height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:3rem 0 0}
+    .state-box{text-align:center;padding:2rem;color:var(--muted);grid-column:1/-1}
+    .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 0.75rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
     footer{border-top:1px solid var(--border);padding:2rem clamp(1rem,4vw,3rem);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
     .footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900}
     .footer-logo span{color:var(--gold)}
@@ -108,11 +113,10 @@
       <span class="hero-rating"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>9.0</span>
       <span class="hero-dot">·</span><span class="hero-year">2008</span>
       <span class="hero-dot">·</span><span class="hero-genre">Action / Crime</span>
-      <span class="hero-dot">·</span><span class="hero-year">2h 32m</span>
     </div>
-    <p class="hero-desc">When the Joker unleashes chaos on Gotham City, Batman must confront one of the greatest psychological tests of his ability to fight injustice — a battle that will leave him questioning everything he stands for.</p>
+    <p class="hero-desc">When the Joker unleashes chaos on Gotham City, Batman must confront one of the greatest psychological tests of his ability to fight injustice.</p>
     <div class="hero-actions">
-      <a href="#" class="btn-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>Watch Now</a>
+      <a href="https://minochinos.com/v/v4vnk7y1xa20" target="_blank" class="btn-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>Watch Now</a>
       <a href="movies.html" class="btn-outline">Browse Movies</a>
     </div>
   </div>
@@ -125,28 +129,32 @@
 </section>
 
 <main>
-  <div class="stats-bar">
-    <div class="stat-item"><span class="stat-num">13</span><span class="stat-label">Movies</span></div>
-    <div class="stat-item"><span class="stat-num">10</span><span class="stat-label">TV Shows</span></div>
-    <div class="stat-item"><span class="stat-num">9.5</span><span class="stat-label">Top Rating</span></div>
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-item"><span class="stat-num" id="movieCount">—</span><span class="stat-label">Movies</span></div>
+    <div class="stat-item"><span class="stat-num" id="showCount">—</span><span class="stat-label">TV Shows</span></div>
+    <div class="stat-item"><span class="stat-num" id="totalViews">—</span><span class="stat-label">Total Views</span></div>
     <div class="stat-item"><span class="stat-num">4K</span><span class="stat-label">Quality</span></div>
   </div>
 
-  <!-- FEATURED MOVIES -->
+  <!-- TOP MOVIES -->
   <div class="section-header">
-    <h2 class="section-title gold">Featured Movies</h2>
-    <a href="movies.html" class="view-all-btn gold">View All Movies →</a>
+    <h2 class="section-title gold">Most Watched <span class="section-sub">— Movies</span></h2>
+    <a href="movies.html" class="view-all-btn gold">View All →</a>
   </div>
-  <div class="card-grid" id="featuredMovies"></div>
+  <div class="card-grid" id="topMovies">
+    <div class="state-box"><div class="spinner"></div><p>Loading…</p></div>
+  </div>
 
   <div class="section-divider"></div>
 
-  <!-- FEATURED TV -->
+  <!-- TOP TV SHOWS -->
   <div class="section-header">
-    <h2 class="section-title blue">Featured TV Shows</h2>
-    <a href="tvshows.html" class="view-all-btn blue">View All Shows →</a>
+    <h2 class="section-title blue">Most Watched <span class="section-sub">— TV Shows</span></h2>
+    <a href="tvshows.html" class="view-all-btn blue">View All →</a>
   </div>
-  <div class="card-grid" id="featuredTV"></div>
+  <div class="card-grid" id="topShows">
+    <div class="state-box"><div class="spinner"></div><p>Loading…</p></div>
+  </div>
 </main>
 
 <footer>
@@ -156,40 +164,111 @@
 </footer>
 
 <script>
-var movies=[
-  {title:"The Dark Knight",year:2008,rating:9.0,genres:["Action","Crime"],emoji:"🦇",colors:["#0d1a30","#1a2d50","#2a4070"]},
-  {title:"Interstellar",year:2014,rating:8.7,genres:["Sci-Fi","Drama"],emoji:"🪐",colors:["#050a1e","#0a1530","#102040"]},
-  {title:"Inception",year:2010,rating:8.8,genres:["Action","Sci-Fi"],emoji:"🌀",colors:["#1a1000","#2d2000","#403010"]},
-  {title:"The Shawshank Redemption",year:1994,rating:9.3,genres:["Drama"],emoji:"🔑",colors:["#1a1000","#302010","#402810"]},
-  {title:"Oppenheimer",year:2023,rating:8.4,genres:["Drama","History"],emoji:"☢️",colors:["#200800","#401000","#601800"]},
-  {title:"Sonic the Hedgehog 3",year:2024,rating:7.2,genres:["Action","Comedy"],emoji:"🦔",colors:["#00004a","#00006b","#00008a"]}
-];
-var tv=[
-  {title:"Breaking Bad",seasons:"5 Seasons",rating:9.5,genres:["Crime","Drama"],emoji:"⚗️",colors:["#0a1a00","#142800","#1e3800"]},
-  {title:"Game of Thrones",seasons:"8 Seasons",rating:9.2,genres:["Fantasy","Drama"],emoji:"🐉",colors:["#1a0a00","#2d1500","#402000"]},
-  {title:"Stranger Things",seasons:"5 Seasons",rating:8.7,genres:["Sci-Fi","Horror"],emoji:"🔦",colors:["#0a0020","#140035","#1e004a"]},
-  {title:"The Last of Us",seasons:"2 Seasons",rating:8.8,genres:["Drama","Sci-Fi"],emoji:"🍄",colors:["#0a1400","#142000","#1e2c00"]},
-  {title:"Peaky Blinders",seasons:"6 Seasons",rating:8.8,genres:["Crime","Drama"],emoji:"🎩",colors:["#0a0014","#140020","#1e002c"]},
-  {title:"The Boys",seasons:"4 Seasons",rating:8.7,genres:["Thriller","Comedy"],emoji:"🦸",colors:["#200000","#380000","#500000"]}
-];
-function card(m,type,i){
-  var g="linear-gradient(145deg,"+m.colors[0]+","+m.colors[1]+","+m.colors[2]+")";
-  var isTV=type==="tv";
-  return '<div class="card '+(isTV?"blue-card":"gold-card")+'" style="animation-delay:'+(i*0.06)+'s">'
-    +'<div class="card-poster"><div class="poster-bg" style="background:'+g+'"></div>'
+var SHEET_ID = "1qytxDQVL3Jg4A8M-813DO7mnDgsdNfF0-nTOEQMQlm8";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGPdCGHHLoQJQqy7TT5sLfjtkGOFSwwscIqi3O9qqEne6CdsFiGLCyi_IfdLNPuVUGBQ/exec";
+
+var genreColors={
+  "action":["#0d1a30","#1a2d50","#2a4070"],"drama":["#1a1000","#302010","#402810"],
+  "sci-fi":["#050a1e","#0a1530","#102040"],"thriller":["#001808","#002810","#003818"],
+  "crime":["#200000","#350000","#500010"],"animation":["#001828","#002840","#003858"],
+  "fantasy":["#1a0a00","#2d1500","#402000"],"comedy":["#1a1800","#2d2a00","#403c00"],
+  "horror":["#0a0000","#1a0000","#2a0000"],"default":["#0d0d20","#1a1a35","#272745"]
+};
+
+function parseCSV(text){
+  var rows=[],cur="",inQ=false,row=[];
+  for(var i=0;i<text.length;i++){
+    var ch=text[i];
+    if(ch==='"'){inQ=!inQ;}
+    else if(ch===','&&!inQ){row.push(cur.replace(/^"|"$/g,""));cur="";}
+    else if((ch==='\n'||ch==='\r')&&!inQ){
+      if(ch==='\r'&&text[i+1]==='\n')i++;
+      row.push(cur.replace(/^"|"$/g,""));rows.push(row);row=[];cur="";
+    }else{cur+=ch;}
+  }
+  if(cur||row.length){row.push(cur.replace(/^"|"$/g,""));rows.push(row);}
+  return rows;
+}
+
+function getColors(g){return genreColors[(g||"").toLowerCase().trim()]||genreColors["default"];}
+
+function trackView(type,title){
+  fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"increment",type:type,title:title})}).catch(function(){});
+}
+
+function buildMovieCard(m,i){
+  var c=getColors(m.genre);
+  var grad="linear-gradient(145deg,"+c[0]+","+c[1]+","+c[2]+")";
+  return '<div class="card gold-card" onclick="trackView(\'movie\',\''+m.title.replace(/'/g,"\\'")+'\')" style="animation-delay:'+(i*0.06)+'s">'
+    +'<div class="card-poster"><div class="poster-bg" style="background:'+grad+'"></div>'
     +'<span class="poster-emoji">'+m.emoji+'</span>'
     +'<div class="card-overlay"></div>'
-    +'<div class="card-rating '+(isTV?"blue":"gold")+'">★ '+m.rating+'</div>'
-    +(isTV?'<div class="card-badge">TV</div>':'')
-    +'<div class="card-play"><div class="play-circle '+(isTV?"blue":"gold")+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>'
+    +'<div class="card-rating gold">★ '+m.rating+'</div>'
+    +(m.views?'<div class="card-views">👁 '+m.views+'</div>':'')
+    +'<div class="card-play"><div class="play-circle gold"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>'
     +'</div><div class="card-info">'
-    +'<div class="card-title">'+(m.title)+'</div>'
-    +'<div class="card-meta"><span class="card-year">'+(isTV?m.seasons:m.year)+'</span>'
-    +'<span class="card-genre '+(isTV?"blue":"gold")+'">'+m.genres[0]+'</span></div>'
+    +'<div class="card-title">'+m.title+'</div>'
+    +'<div class="card-meta"><span class="card-year">'+m.year+'</span><span class="card-genre gold">'+m.genre+'</span></div>'
     +'</div></div>';
 }
-document.getElementById("featuredMovies").innerHTML=movies.map(function(m,i){return card(m,"movie",i)}).join("");
-document.getElementById("featuredTV").innerHTML=tv.map(function(m,i){return card(m,"tv",i)}).join("");
+
+function buildShowCard(m,i){
+  var c=getColors(m.genre);
+  var grad="linear-gradient(145deg,"+c[0]+","+c[1]+","+c[2]+")";
+  var url="tvshow.html?show="+encodeURIComponent(m.title);
+  return '<a href="'+url+'" class="card blue-card" onclick="trackView(\'show\',\''+m.title.replace(/'/g,"\\'")+'\')" style="animation-delay:'+(i*0.06)+'s;color:inherit">'
+    +'<div class="card-poster"><div class="poster-bg" style="background:'+grad+'"></div>'
+    +'<span class="poster-emoji">'+m.emoji+'</span>'
+    +'<div class="card-overlay"></div>'
+    +'<div class="card-rating blue">★ '+m.rating+'</div>'
+    +'<div class="card-badge">TV</div>'
+    +(m.views?'<div class="card-views">👁 '+m.views+'</div>':'')
+    +'<div class="card-play"><div class="play-circle blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg></div></div>'
+    +'</div><div class="card-info">'
+    +'<div class="card-title">'+m.title+'</div>'
+    +'<div class="card-meta"><span class="card-year">'+m.seasons+'</span><span class="card-genre blue">'+m.genre+'</span></div>'
+    +'</div></a>';
+}
+
+// Load movies sorted by views
+fetch("https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv&sheet=Movies")
+  .then(function(r){return r.text()})
+  .then(function(csv){
+    var rows=parseCSV(csv).slice(1).filter(function(r){return r[0]&&r[0].trim()});
+    // Columns: Title|Year|Rating|Genre|Emoji|Watch Link|Views
+    var movies=rows.map(function(r){
+      return{title:r[0],year:r[1],rating:r[2],genre:(r[3]||"").toLowerCase().trim(),emoji:r[4]||"🎬",watchLink:r[5]||"",views:parseInt(r[6])||0};
+    });
+    document.getElementById("movieCount").textContent=movies.length;
+    // Sort by views descending, take top 6
+    movies.sort(function(a,b){return b.views-a.views});
+    var top=movies.slice(0,6);
+    var grid=document.getElementById("topMovies");
+    if(!top.length){grid.innerHTML='<div class="state-box"><p>No movies yet.</p></div>';return;}
+    grid.innerHTML=top.map(function(m,i){return buildMovieCard(m,i)}).join("");
+    // Update total views
+    var tv=parseInt(document.getElementById("totalViews").textContent)||0;
+    var mv=movies.reduce(function(s,m){return s+(m.views||0)},0);
+    document.getElementById("totalViews").textContent=mv+tv>0?mv+tv+"+":'—';
+  }).catch(function(){document.getElementById("topMovies").innerHTML='<div class="state-box"><p>Could not load movies.</p></div>';});
+
+// Load TV shows sorted by views
+fetch("https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv&sheet=TV+Shows")
+  .then(function(r){return r.text()})
+  .then(function(csv){
+    var rows=parseCSV(csv).slice(1).filter(function(r){return r[0]&&r[0].trim()});
+    // Columns: Title|Seasons|Rating|Genre|Emoji|Watch Link|Views
+    var shows=rows.map(function(r){
+      return{title:r[0],seasons:r[1],rating:r[2],genre:(r[3]||"").toLowerCase().trim(),emoji:r[4]||"📺",watchLink:r[5]||"",views:parseInt(r[6])||0};
+    });
+    document.getElementById("showCount").textContent=shows.length;
+    // Sort by views descending, take top 6
+    shows.sort(function(a,b){return b.views-a.views});
+    var top=shows.slice(0,6);
+    var grid=document.getElementById("topShows");
+    if(!top.length){grid.innerHTML='<div class="state-box"><p>No shows yet.</p></div>';return;}
+    grid.innerHTML=top.map(function(m,i){return buildShowCard(m,i)}).join("");
+  }).catch(function(){document.getElementById("topShows").innerHTML='<div class="state-box"><p>Could not load shows.</p></div>';});
 </script>
 </body>
 </html>
